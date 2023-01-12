@@ -21,3 +21,5 @@ a file on users home folder.
 
 Maybe learn better ways to manage state too before rushing into new app
 which is already tickling in the mind.
+
+But god damm those Enums with types are great.
