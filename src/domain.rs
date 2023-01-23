@@ -1,39 +1,5 @@
 use std::fmt;
 
-#[derive(Debug, PartialEq)]
-pub enum DomainCmd {
-    Add(String),
-    Toggle(usize),
-}
-
-#[derive(Clone)]
-pub struct TodoItem {
-    text: String,
-    done: bool,
-}
-
-impl TodoItem {
-    pub fn new() -> Self {
-        Self {
-            text: "toggle me done".to_string(),
-            done: false,
-        }
-    }
-    pub fn new_from(str: String) -> Self {
-        Self {
-            text: str.to_string(),
-            done: false,
-        }
-    }
-}
-
-impl fmt::Display for TodoItem {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "[{}]\t{}", self.done, self.text)
-    }
-}
-
-#[derive(Clone)]
 pub struct TodoDomain {
     items: Vec<TodoItem>,
 }
@@ -41,16 +7,18 @@ pub struct TodoDomain {
 impl TodoDomain {
     pub fn new() -> Self {
         Self {
-            items: vec![TodoItem::new()],
+            items: Vec::new(),
         }
     }
-    pub fn copy(&self) -> TodoDomain {
-        let mut v = vec![TodoItem::new()];
+
+    pub fn _copy(&self) -> TodoDomain {
+        let mut v = Vec::new();
         for i in self.items.iter() {
             v.push(i.clone());
         }
         TodoDomain { items: v }
     }
+
     pub fn command(self, cmd: DomainCmd) -> TodoDomain {
         let mut v: Vec<TodoItem> = Vec::new();
         match cmd {
@@ -58,7 +26,7 @@ impl TodoDomain {
                 for i in self.items.iter() {
                     v.push(i.clone());
                 }
-                v.push(TodoItem::new_from(t));
+                v.push(TodoItem::from(t.as_str()));
             }
             DomainCmd::Toggle(index) => {
                 for (x, i) in self.items.iter().enumerate() {
@@ -70,6 +38,7 @@ impl TodoDomain {
         }
         return TodoDomain { items: v };
     }
+
 }
 
 impl fmt::Display for TodoDomain {
@@ -83,11 +52,38 @@ impl fmt::Display for TodoDomain {
     }
 }
 
+#[derive(Debug, PartialEq)]
+pub enum DomainCmd {
+    Add(String),
+    Toggle(usize),
+}
+
+#[derive(Clone)]
+pub struct TodoItem {
+    text: String,
+    done: bool,
+}
+
+impl TodoItem {
+    pub fn from(str: &str) -> Self {
+        Self {
+            text: str.to_string(),
+            done: false,
+        }
+    }
+}
+
+impl fmt::Display for TodoItem {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[{}]\t{}", self.done, self.text)
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use super::*;
+    //use super::*;
     #[test]
-    fn state_machine_test() {
-        let mut domain = TodoDomain::new();
+    fn test_two() {
+        assert!(true);
     }
 }

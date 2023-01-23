@@ -1,6 +1,7 @@
 use std::io;
 use crate::ui;
 use crate::domain;
+use crate::infra;
 
 #[derive(Debug,PartialEq)]
 enum AppCmd {
@@ -12,9 +13,14 @@ enum AppCmd {
     Toggle(usize),
 }
 
-pub fn app_loop() {
-    ui::greetings();
+
+pub fn app_loop(historylog: &str) {
+    //let domain: &'static domain::TodoDomain = &domain::TodoDomain::new();
     let mut domain = domain::TodoDomain::new();
+    let history = infra::read(historylog);
+
+    ui::greetings();
+    
     loop {
         print!("{}", domain.to_string());
         println!("q: [quit], a: [new item name], t: [toggle]");
