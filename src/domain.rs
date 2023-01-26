@@ -4,6 +4,10 @@ pub struct TodoDomain {
     items: Vec<TodoItem>,
 }
 
+trait Todo {
+    
+}
+
 impl TodoDomain {
     pub fn new() -> Self {
         Self {
@@ -19,7 +23,7 @@ impl TodoDomain {
         TodoDomain { items: v }
     }
 
-    pub fn command(self, cmd: DomainCmd) -> TodoDomain {
+    pub fn command(&self, cmd: DomainCmd) -> TodoDomain {
         let mut v: Vec<TodoItem> = Vec::new();
         match cmd {
             DomainCmd::Add(t) => {

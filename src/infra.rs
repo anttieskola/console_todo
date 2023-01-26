@@ -7,9 +7,9 @@ use std::io::Write;
 
 /// Basic raw event
 pub struct Event {
-    name: String,
+    pub name: String,
     /// "Unlimited storage"
-    data: Vec<String>,
+    pub data: Vec<String>,
 }
 
 impl Event {
@@ -88,8 +88,20 @@ fn read_file(file: File) -> Vec<Event> {
     }
 }
 
+/// Add new event into history
+pub fn push(path: &str, event: Event) -> bool {
+    let log = OpenOptions::new().create(true).append(true).open(path);
+    match log {
+        Ok(log_file) => append_file(log_file, &vec![event]),
+        Err(e) => {
+            println!("push error: {}", e);
+            return false;
+        }
+    }
+}
+
 /// Add new events into history (only new events)
-fn append(path: &str, events: &Vec<Event>) -> bool {
+pub fn _append(path: &str, events: &Vec<Event>) -> bool {
     let log = OpenOptions::new().create(true).append(true).open(path);
     match log {
         Ok(log_file) => append_file(log_file, events),
@@ -102,6 +114,8 @@ fn append(path: &str, events: &Vec<Event>) -> bool {
 
 fn append_file(file: File, events: &Vec<Event>) -> bool {
     // todo: is it be better to gather all like this or write one at a time?
+    // guessing... each writer call must be os call, most likely syncronized
+    // so it's better to gather all and write in big batch
     let mut buffer = String::with_capacity(1024);
     for event in events.iter() {
         buffer.push_str("\n");
@@ -142,7 +156,7 @@ mod tests {
             std::fs::remove_file(TEST_FILE_OUTPUT).unwrap();
         }
         let events = read(TEST_FILE_INPUT);
-        assert!(append(TEST_FILE_OUTPUT, &events));
+        assert!(_append(TEST_FILE_OUTPUT, &events));
         let events = read(TEST_FILE_OUTPUT);
         assert_test_input_events(&events);
         std::fs::remove_file(TEST_FILE_OUTPUT).unwrap();
